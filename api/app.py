@@ -2,9 +2,10 @@ import os
 
 import requests
 import tmdbsimple
-from bottle import Bottle, response
-from movie import movie_app
-from people import people_app
+from bottle import Bottle, response, default_app
+
+from .movie import movie_app
+from .people import people_app
 
 DEBUG = os.environ.get('DEBUG', False)
 tmdbsimple.API_KEY = os.environ['API_TOKEN']
@@ -31,8 +32,12 @@ def check_data():
             f.write(requests.get(url).content)
 
 
-if __name__ == '__main__':
-    check_data()
-    main_app.merge(people_app)
-    main_app.merge(movie_app)
+check_data()
+main_app.merge(people_app)
+main_app.merge(movie_app)
+
+if DEBUG:
     main_app.run(host='localhost', port=8080, debug=DEBUG)
+else:
+    app = default_app()
+    app.merge(main_app)
