@@ -1,7 +1,9 @@
+import os
+
 import tmdbsimple
 from bottle import Bottle
 
-from api import LANGUAGE
+LANGUAGE = os.environ['LANGUAGE']
 
 people_app = Bottle()
 

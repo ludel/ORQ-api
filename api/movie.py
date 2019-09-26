@@ -1,10 +1,28 @@
+import os
+
 import pandas as pd
 import tmdbsimple
 from bottle import Bottle, abort
 
-from api import LANGUAGE
+LANGUAGE = os.environ['LANGUAGE']
+FILTERS = {
+    'upcoming': tmdbsimple.Movies().upcoming,
+    'top': tmdbsimple.Movies().top_rated,
+    'popular': tmdbsimple.Movies().popular,
+    'now-playing': tmdbsimple.Movies().now_playing,
+}
 
 movie_app = Bottle()
+
+
+def add_is_clustered_attr(response):
+    df = pd.read_csv('data/movie.csv')
+
+    for index, movie in enumerate(response['results']):
+        is_clustered = 'true' if df.id.isin([movie['id']]).any() else 'false'
+        response['results'][index]['is_clustered'] = is_clustered
+
+    return response
 
 
 @movie_app.get('/movies/<uid:int>')
@@ -23,16 +41,7 @@ def movie_recommendation(uid):
     return abort(404, 'No result')
 
 
-@movie_app.get('/movies/top/<page:int>')
-def movie_top(page):
-    return tmdbsimple.Movies().top_rated(page=page, language=LANGUAGE)
-
-
-@movie_app.get('/movies/popular/<page:int>')
-def movie_popular(page):
-    return tmdbsimple.Movies().popular(page=page, language=LANGUAGE)
-
-
-@movie_app.get('/movies/now-playing/<page:int>')
-def movie_now_playing(page):
-    return tmdbsimple.Movies().popular(page=page, language=LANGUAGE)
+@movie_app.get(f"/movies/<filter_option:re:{'|'.join(FILTERS.keys())}>/<page:int>")
+def movie_filter(filter_option, page):
+    resp = FILTERS[filter_option](page=page, language=LANGUAGE)
+    return add_is_clustered_attr(resp)

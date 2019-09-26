@@ -1,13 +1,26 @@
 import os
 
 import requests
-from bottle import Bottle
+import tmdbsimple
+from bottle import Bottle, response
+from movie import movie_app
+from people import people_app
 
-from api import DEBUG
-from api.movie import movie_app
-from api.people import people_app
+DEBUG = os.environ.get('DEBUG', False)
+tmdbsimple.API_KEY = os.environ['API_TOKEN']
 
 main_app = Bottle()
+
+
+@main_app.hook('after_request')
+def enable_cors():
+    """
+    You need to add some headers to each request.
+    Don't use the wildcard '*' for Access-Control-Allow-Origin in production.
+    """
+    response.headers['Access-Control-Allow-Origin'] = os.environ.get('ALLOW_ORIGIN', '')
+    response.headers['Access-Control-Allow-Methods'] = 'PUT, GET, POST, DELETE, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
 
 
 def check_data():
