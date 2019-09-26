@@ -45,3 +45,8 @@ def movie_recommendation(uid):
 def movie_filter(filter_option, page):
     resp = FILTERS[filter_option](page=page, language=LANGUAGE)
     return add_is_clustered_attr(resp)
+
+
+@movie_app.get('/movies/search/<query>/<page:int>')
+def movie_search(query, page):
+    return tmdbsimple.Search().movie(query=query, page=page)
