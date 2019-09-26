@@ -7,4 +7,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD [ "gunicorn",  "--workers=2" ,"-b :8080", "api.app:app"]
+CMD [ "gunicorn",  "--workers=2" ,"-b :8080", "api.app:main_app"]

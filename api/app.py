@@ -2,7 +2,7 @@ import os
 
 import requests
 import tmdbsimple
-from bottle import Bottle, response, default_app
+from bottle import Bottle, response
 
 from .movie import movie_app
 from .people import people_app
@@ -38,6 +38,3 @@ main_app.merge(movie_app)
 
 if DEBUG:
     main_app.run(host='localhost', port=8080, debug=DEBUG)
-else:
-    app = default_app()
-    app.merge(main_app)
