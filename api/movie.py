@@ -27,7 +27,7 @@ def add_is_clustered_attr(response):
 
 @movie_app.get('/movies/<uid:int>')
 def movie_retrieve(uid):
-    return tmdbsimple.Movies(uid).info(append_to_response='credits,keywords,videos,reviews')
+    return tmdbsimple.Movies(uid).info(language=LANGUAGE, append_to_response='credits,keywords,videos,reviews,images')
 
 
 @movie_app.get('/movies/<uid:int>/recommendation')
@@ -49,4 +49,4 @@ def movie_filter(filter_option, page):
 
 @movie_app.get('/movies/search/<query>/<page:int>')
 def movie_search(query, page):
-    return tmdbsimple.Search().movie(query=query, page=page)
+    return tmdbsimple.Search().movie(query=query, page=page, language=LANGUAGE)
