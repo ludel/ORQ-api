@@ -4,8 +4,8 @@ import requests
 import tmdbsimple
 from bottle import Bottle, response
 
-from .movie import movie_app
-from .people import people_app
+from views.movie import movie_app
+from views.people import people_app
 
 DEBUG = os.environ.get('DEBUG', False)
 tmdbsimple.API_KEY = os.environ['API_TOKEN']
@@ -25,9 +25,8 @@ def enable_cors():
 
 
 def check_data():
-    if not os.path.exists('data/movie.csv'):
-        url = os.environ['DATA_URL']
-
+    if not os.path.exists('data/movie-clustered.csv'):
+        url = os.environ['MOVIE_URL']
         with open('data/movie.csv', 'wb') as f:
             f.write(requests.get(url).content)
 

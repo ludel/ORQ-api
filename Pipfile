@@ -10,6 +10,9 @@ bottle = "*"
 tmdbsimple = "*"
 pandas = "*"
 gunicorn = "*"
+neomodel = "*"
+tqdm = "*"
+redis = "*"
 
 [requires]
 python_version = "3.7"
