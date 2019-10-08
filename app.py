@@ -1,6 +1,5 @@
 import os
 
-import requests
 import tmdbsimple
 from bottle import Bottle, response
 
@@ -24,14 +23,6 @@ def enable_cors():
     response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
 
 
-def check_data():
-    if not os.path.exists('data/movie-clustered.csv'):
-        url = os.environ['MOVIE_URL']
-        with open('data/movie.csv', 'wb') as f:
-            f.write(requests.get(url).content)
-
-
-check_data()
 main_app.merge(people_app)
 main_app.merge(movie_app)
 

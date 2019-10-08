@@ -1,8 +1,21 @@
+import os
+
 import pandas as pd
+import requests
 from neomodel import db, DoesNotExist, remove_all_labels
 from tqdm import tqdm
 
 from views.models import Movie, Actor, Compositor, Director, Keyword, Producer, Genre
+
+
+def check_data():
+    if not os.path.exists('data/movie.csv'):
+        url = 'https://raw.githubusercontent.com/ludel/suggestore/2.0/suggestore/clustering/data/movie_clustered.csv'
+        with open('data/movie.csv', 'wb') as f:
+            f.write(requests.get(url).content)
+
+
+check_data()
 
 
 def get_or_create(model, **field):
