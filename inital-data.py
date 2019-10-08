@@ -2,7 +2,7 @@ import os
 
 import pandas as pd
 import requests
-from neomodel import db, DoesNotExist, remove_all_labels
+from neomodel import db, DoesNotExist
 from tqdm import tqdm
 
 from views.models import Movie, Actor, Compositor, Director, Keyword, Producer, Genre
@@ -28,8 +28,6 @@ def get_or_create(model, **field):
 
 
 df = pd.read_csv('data/movie.csv')
-
-remove_all_labels()
 
 with db.transaction:
     for index, row in tqdm(df.iterrows(), total=df.shape[0]):
