@@ -29,7 +29,7 @@ def get_or_create(model, **field):
 
 df = pd.read_csv('data/movie.csv')
 
-remove_all_labels(db)
+remove_all_labels()
 
 with db.transaction:
     for index, row in tqdm(df.iterrows(), total=df.shape[0]):
