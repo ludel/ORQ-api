@@ -34,7 +34,7 @@ remove_all_labels()
 with db.transaction:
     for index, row in tqdm(df.iterrows(), total=df.shape[0]):
         try:
-            Movie.nodes.get(uid=row['uid'])
+            Movie.nodes.get(uid=row['id'])
         except DoesNotExist:
             movie = Movie(
                 uid=row['id'],
