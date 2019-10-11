@@ -11,8 +11,8 @@ people_app = Bottle()
 
 
 @people_app.get('/peoples/<uid:int>')
-def peoples_retrieve(uid):
-    cache_manager = CacheManager(f'people-{uid}', 60 * 60 * 24)
+def peoples_retrieve(uid, rdb):
+    cache_manager = CacheManager(rdb, f'people-{uid}', 60 * 60 * 24)
 
     return cache_manager.get_or_set(
         tmdbsimple.People(uid).info,

@@ -20,8 +20,8 @@ df = pd.read_csv('data/movie.csv')
 
 
 @movie_app.get('/movies/<uid:int>')
-def movie_retrieve(uid):
-    cache_manager = CacheManager(f'movie-{uid}', 60 * 60 * 24 * 7)
+def movie_retrieve(uid, rdb):
+    cache_manager = CacheManager(rdb, f'movie-{uid}', 60 * 60 * 24 * 7)
 
     return cache_manager.get_or_set(
         tmdbsimple.Movies(uid).info,
