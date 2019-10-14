@@ -10,7 +10,7 @@ class CacheManager:
         self.expiration = expiration
         self.cache_db = cache_db
 
-    def get_or_set(self, request, **kwargs):
+    def get_or_set(self, request, after_request=None, **kwargs):
         content = self.cache_db.get(self.key)
 
         if content:
@@ -20,7 +20,10 @@ class CacheManager:
             content = request(**kwargs)
         except exceptions.HTTPError:
             return abort(404, 'Not found')
-        else:
-            self.cache_db.set(self.key, json.dumps(content), ex=self.expiration)
+
+        if after_request:
+            content = getattr(content, after_request)()
+
+        self.cache_db.set(self.key, json.dumps(content), ex=self.expiration)
 
         return content
