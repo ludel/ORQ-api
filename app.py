@@ -12,7 +12,7 @@ DEBUG = os.environ.get('DEBUG', False)
 tmdbsimple.API_KEY = os.environ['API_TOKEN']
 
 main_app = Bottle()
-redis_plugin = bottle_redis.RedisPlugin(host='localhost', socket_keepalive=True, retry_on_timeout=True)
+redis_plugin = bottle_redis.RedisPlugin(host='localhost', health_check_interval=60 * 60)
 
 people_app.install(redis_plugin)
 movie_app.install(redis_plugin)
