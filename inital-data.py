@@ -5,7 +5,7 @@ import requests
 from neomodel import db, DoesNotExist
 from tqdm import tqdm
 
-from views.models import Movie, Actor, Compositor, Director, Keyword, Producer, Genre
+from models.movie import Movie, Actor, Compositor, Director, Keyword, Producer, Genre
 
 
 def check_data():

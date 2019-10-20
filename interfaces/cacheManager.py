@@ -3,9 +3,14 @@ import json
 from bottle import abort
 from requests import exceptions
 
+ONE_DAY = 60 * 60 * 24
+ONE_WEEK = ONE_DAY * 7
+ONE_MONTH = ONE_WEEK * 4
+ONE_YEAR = ONE_MONTH * 12
+
 
 class CacheManager:
-    def __init__(self, cache_db, key, expiration=86400):
+    def __init__(self, cache_db, key, expiration=ONE_WEEK):
         self.key = key
         self.expiration = expiration
         self.cache_db = cache_db

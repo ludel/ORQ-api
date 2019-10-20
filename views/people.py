@@ -3,7 +3,7 @@ import os
 import tmdbsimple
 from bottle import Bottle
 
-from interfaces.cacheManager import CacheManager
+from interfaces.cacheManager import CacheManager, ONE_WEEK
 
 LANGUAGE = os.environ['LANGUAGE']
 
@@ -12,7 +12,7 @@ people_app = Bottle()
 
 @people_app.get('/peoples/<uid:int>')
 def peoples_retrieve(uid, rdb):
-    cache_manager = CacheManager(rdb, f'people-{uid}', 60 * 60 * 24)
+    cache_manager = CacheManager(rdb, f'people-{uid}', ONE_WEEK)
 
     return cache_manager.get_or_set(
         tmdbsimple.People(uid).info,

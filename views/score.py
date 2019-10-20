@@ -1,14 +1,14 @@
 import requests
 from bottle import Bottle
 
-from interfaces.cacheManager import CacheManager
+from interfaces.cacheManager import CacheManager, ONE_WEEK
 
 score_app = Bottle()
 
 
 @score_app.get('/score/<query>')
 def score_retrieve(query, rdb):
-    cache_manager = CacheManager(rdb, f'query-{query}', 60 * 60 * 24 * 7)
+    cache_manager = CacheManager(rdb, f'query-{query}', ONE_WEEK)
 
     return cache_manager.get_or_set(
         requests.get,

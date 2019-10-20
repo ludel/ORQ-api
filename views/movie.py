@@ -4,8 +4,8 @@ import pandas as pd
 import tmdbsimple
 from bottle import Bottle, abort
 
-from interfaces.cacheManager import CacheManager
-from views.models import Movie
+from interfaces.cacheManager import CacheManager, ONE_MONTH
+from models.movie import Movie
 
 LANGUAGE = os.environ['LANGUAGE']
 FILTERS = {
@@ -21,7 +21,7 @@ df = pd.read_csv('data/movie.csv')
 
 @movie_app.get('/movies/<uid:int>')
 def movie_retrieve(uid, rdb):
-    cache_manager = CacheManager(rdb, f'movie-{uid}', 60 * 60 * 24 * 7)
+    cache_manager = CacheManager(rdb, f'movie-{uid}', ONE_MONTH)
 
     return cache_manager.get_or_set(
         tmdbsimple.Movies(uid).info,
