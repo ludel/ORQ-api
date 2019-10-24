@@ -8,7 +8,7 @@ score_app = Bottle()
 
 @score_app.get('/score/<query>')
 def score_retrieve(query, rdb):
-    cache_manager = CacheManager(rdb, f'query-{query}', ONE_WEEK)
+    cache_manager = CacheManager(rdb, f'score-{query}', ONE_WEEK)
 
     return cache_manager.get_or_set(
         requests.get,

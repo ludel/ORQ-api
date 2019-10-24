@@ -58,3 +58,5 @@ def movie_filter(filter_option, page):
 @movie_app.get('/movies/search/<query>/<page:int>')
 def movie_search(query, page):
     return tmdbsimple.Search().movie(query=query, page=page, language=LANGUAGE)
+
+
