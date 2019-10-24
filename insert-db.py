@@ -8,7 +8,7 @@ from models.movie import Movie, Actor, Compositor, Director, Keyword, Producer, 
 
 config.DATABASE_URL = os.environ['BOLT']
 
-df = pd.read_csv('../data/movie.csv')
+df = pd.read_csv('data/movie.csv')
 df.drop_duplicates(subset='id', inplace=True)
 df.fillna('', inplace=True)
 
