@@ -1,5 +1,3 @@
-import json
-
 from bottle import Bottle, request, abort
 
 from models.movie import Movie, Base
@@ -9,33 +7,39 @@ recommendation_app = Bottle()
 
 @recommendation_app.post('/recommendation')
 def recommendation():
-    current_interest = request.forms.get("currentInterest")
-    all_interests = json.loads(request.forms.get("allInterest", {}))
-    results = Movie.related_base(current_interest)
+    cursor_about = request.json.get("cursorAbout")
+    user_matrix = request.json.get("userMatrix", {})
+    selection = request.json.get('selection', [])
+
+    clean_selection = [int(uid) for uid in selection]
+
+    results = Movie.related_base(cursor_about, clean_selection)
 
     scoring = {}
-    for row in results:
+    for index, row in enumerate(results):
         movie = Movie.inflate(row[0])
         bases = [Base.inflate(b).name for b in row[1]]
 
-        scoring[movie.title] = {'score': 0, 'relations': [], 'data': movie.serialize}
+        content = {'title': movie.title, 'score': 0, 'relations': [], 'data': movie.serialize}
 
-        for key, value in all_interests.items():
+        for key, value in user_matrix.items():
             if key in bases:
-                scoring[movie.title]['score'] += value
-                scoring[movie.title]['relations'].append(key)
+                content['score'] += value
+                content['relations'].append(key)
+
+        scoring[index] = content
 
     return scoring
 
 
 @recommendation_app.post('/recommendation/matrix')
 def recommendation_matrix():
-    selection = request.forms.get("selection")
+    selection = request.json.get('selection')
 
     if not selection:
-        return abort(400, "Selection not privided")
+        return abort(400, 'Selection not privided')
 
-    keys = json.loads(selection).keys()
+    keys = selection.keys()
     selection_ids = [int(uid) for uid in keys]
 
     interests = {}
@@ -46,3 +50,13 @@ def recommendation_matrix():
         interests[name] = row[1] + existing_count
 
     return interests
+
+
+@recommendation_app.route('/recommendation/matrix', method=['OPTIONS'])
+def recommendation_matrix_option():
+    return
+
+
+@recommendation_app.route('/recommendation', method=['OPTIONS'])
+def recommendation_option():
+    return

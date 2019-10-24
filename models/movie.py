@@ -21,28 +21,21 @@ class Movie(neo.StructuredNode):
     @property
     def serialize(self):
         return {
+            'id': self.uid,
             'title': self.title,
-            'vote': self.vote,
+            'vote_average': self.vote,
             'overview': self.overview,
-            'poster': self.poster,
-            'date': self.date,
-            'language': self.language
+            'poster_path': self.poster,
+            'release_date': self.date,
+            'original_language': self.language
         }
 
     @classmethod
-    def recommendation(cls, selection_ids, movies_in_cluster):
-        return neo.db.cypher_query(
-            f"""MATCH (p)-[:LEAD_BY|:COMPOSED_BY|:PRODUCE_BY|:PLAYED_BY|:IS]-(Movie) WHERE Movie.uid in {selection_ids} 
-            WITH p MATCH (m:Movie) WHERE m.uid in {movies_in_cluster}  
-            AND (p)-[:LEAD_BY|:COMPOSED_BY|:PRODUCE_BY|:PLAYED_BY|:IS]-(m) 
-            WITH m, count(p) AS NumberPerson RETURN m ORDER BY NumberPerson DESC LIMIT 10 """
-        )
-
-    @classmethod
-    def related_base(cls, name):
+    def related_base(cls, name, selection):
         return neo.db.cypher_query(
             f"""MATCH (Base {{name:"{name}"}})--(m:Movie)--(b:Base)
-                RETURN m, collect(b) LIMIT 30"""
+                WHERE NOT m.uid IN {selection}
+                RETURN m, collect(b) LIMIT 50"""
         )[0]
 
     @classmethod
