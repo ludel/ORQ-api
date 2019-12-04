@@ -12,7 +12,8 @@ pandas = "*"
 gunicorn = "*"
 neomodel = "*"
 tqdm = "*"
-redis = "*"
+bottle-redis = "*"
+bottle-sqlite = "*"
 
 [requires]
 python_version = "3.7"
