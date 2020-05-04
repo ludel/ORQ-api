@@ -1,7 +1,7 @@
 import os
+import sqlite3
 
 import bottle_redis
-import bottle_sqlite
 import tmdbsimple
 from bottle import Bottle, response
 
@@ -14,18 +14,14 @@ from views.session import session_app
 
 DEBUG = os.environ.get('DEBUG', False)
 tmdbsimple.API_KEY = os.environ['API_TOKEN']
-DB_FILE = 'db.sqlite'
 
 main_app = Bottle()
 
 redis_plugin = bottle_redis.RedisPlugin(host='localhost')
-sqlite_plugin = bottle_sqlite.SQLitePlugin(dbfile=DB_FILE)
 
 people_app.install(redis_plugin)
 movie_app.install(redis_plugin)
 score_app.install(redis_plugin)
-
-session_app.install(sqlite_plugin)
 
 
 @main_app.hook('after_request')
@@ -41,6 +37,10 @@ main_app.merge(score_app)
 main_app.merge(recommendation_app)
 main_app.merge(session_app)
 
-User.init(DB_FILE)
+try:
+    User.create()
+except sqlite3.OperationalError:
+    print('Table site already exist !')
+
 if DEBUG:
     main_app.run(host='localhost', port=8080, debug=DEBUG)

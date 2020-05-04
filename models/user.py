@@ -1,27 +1,10 @@
-import sqlite3
+from notaorm.datatype import Int, Varchar
+from notaorm.table import Table
 
-
-class User:
-
-    @staticmethod
-    def init(db_file):
-        conn = sqlite3.connect(db_file)
-        cursor = conn.cursor()
-
-        query = """
-            create table user (
-                id INTEGER constraint user_pk primary key autoincrement,
-                email VARCHAR(255) not null,
-                password VARCHAR(255) not null,
-                watchlist VARCHAR(255)
-            );
-        """
-
-        try:
-            cursor.execute(query)
-        except sqlite3.OperationalError:
-            print('Table user already exist')
-        else:
-            conn.commit()
-
-        cursor.close()
+User = Table('user', rows=(
+    Int('id', primary_key=True, not_null=True),
+    Varchar('email', length=255, unique=True, not_null=True),
+    Varchar('password', not_null=True),
+    Varchar('watchlist'),
+    Varchar('token', not_null=True),
+))
