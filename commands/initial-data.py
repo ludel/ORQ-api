@@ -2,8 +2,11 @@ import os
 
 import pandas as pd
 import tmdbsimple
+from dotenv import load_dotenv
+import time
+from movie_request import MovieRequest
 
-from commands.movie_request import MovieRequest
+load_dotenv('.env')
 
 LANGUAGE = os.environ['LANGUAGE']
 
@@ -31,15 +34,15 @@ def get_detail(movie):
     }
 
 
-def main(file_path):
+def main(file_path, limit, sleep):
     df = pd.DataFrame(columns=header)
 
-    for page in range(1, 300):
+    for page in range(1, limit):
         print(f'=> Page {page}')
-
         movies_overview = tmdbsimple.Movies().top_rated(page=page)
 
         for movie in movies_overview['results']:
+            time.sleep(sleep)
             print(f"    -> {movie['title']}")
             detail = tmdbsimple.Movies(movie['id']).info(
                 language=LANGUAGE,
@@ -53,4 +56,25 @@ def main(file_path):
 
 
 if __name__ == '__main__':
-    main('data/movie.csv')
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-o",
+        "--output",
+        type=str
+    )
+    parser.add_argument(
+        "-s",
+        "--sleep",
+        type=float,
+        default=1.0
+    )
+    parser.add_argument(
+        "-n",
+        "--limit",
+        type=int,
+    )
+
+    args = parser.parse_args()
+    main(args.output, args.limit, args.sleep)
