@@ -73,8 +73,8 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-o",
-        "--output",
+        "-i",
+        "--input_file",
         type=str
     )
     parser.add_argument(
@@ -84,4 +84,4 @@ if __name__ == '__main__':
     )
 
     args = parser.parse_args()
-    main(args.output, args.remove)
+    main(args.output, args.input_file)
