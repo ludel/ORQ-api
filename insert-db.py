@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from neomodel import db, DoesNotExist, config, install_all_labels, remove_all_labels
 from tqdm import tqdm
 
-from models.movie import Movie, Actor, Compositor, Director, Keyword, Producer, Genre
+from models import Movie, Actor, Compositor, Director, Keyword, Producer, Genre
 
 load_dotenv('.env')
 
