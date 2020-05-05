@@ -59,14 +59,27 @@ def update_watchlist(update):
     if update == 'add':
         watchlist.append(movie_id)
     else:
-        watchlist.remove(movie_id)
+        try:
+            watchlist.remove(movie_id)
+        except ValueError:
+            return abort(400, 'Movie not in watchlist')
 
-    User.change.update(User.pk == user.id, watchlist=','.join(watchlist))
-    return 'Watchlist updated'
+    watchlist = ','.join(watchlist)
+    User.change.update(User.pk == user.id, watchlist=watchlist)
+    return watchlist
+
+
+@session_app.get("/session/watchlist/<token>")
+def get_watchlist(token):
+    user = User.show.get(User.token == token)
+    if not user:
+        return abort(400, 'User not found')
+    return user.watchlist
 
 
 @session_app.route('/session/sign_up/', method=['OPTIONS'])
-@session_app.route("/session/watchlist/<update:re:add|remove>", method=['OPTIONS'])
+@session_app.route("/session/watchlist/add", method=['OPTIONS'])
+@session_app.route("/session/watchlist/remove", method=['OPTIONS'])
 @session_app.route('/session/sign_in/', method=['OPTIONS'])
 def option():
     return
