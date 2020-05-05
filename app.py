@@ -3,8 +3,8 @@ import sqlite3
 
 import bottle_redis
 import tmdbsimple
-from bottle import Bottle, response
 
+from bottle import Bottle, response
 from models.user import User
 from views.movie import movie_app
 from views.people import people_app
@@ -23,6 +23,12 @@ people_app.install(redis_plugin)
 movie_app.install(redis_plugin)
 score_app.install(redis_plugin)
 
+main_app.merge(people_app)
+main_app.merge(movie_app)
+main_app.merge(score_app)
+main_app.merge(recommendation_app)
+main_app.merge(session_app)
+
 
 @main_app.hook('after_request')
 def enable_cors():
@@ -30,12 +36,6 @@ def enable_cors():
     response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
     response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
 
-
-main_app.merge(people_app)
-main_app.merge(movie_app)
-main_app.merge(score_app)
-main_app.merge(recommendation_app)
-main_app.merge(session_app)
 
 try:
     User.create()

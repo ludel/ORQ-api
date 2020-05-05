@@ -2,7 +2,6 @@ import hashlib
 import uuid
 
 from bottle import Bottle, request, abort
-
 from models.user import User
 
 session_app = Bottle()
@@ -41,7 +40,7 @@ def sign_in():
     if user:
         return {'token': user.token, 'watchlist': user.watchlist}
     else:
-        return 'Bad username or password'
+        return abort(400, 'Bad username or password')
 
 
 @session_app.post("/session/watchlist/<update:re:add|remove>")
@@ -67,7 +66,7 @@ def update_watchlist(update):
 
 
 @session_app.route('/session/sign_up/', method=['OPTIONS'])
-@session_app.route("/session/watchlist/<update:re:add|remove>", method=['PUT'])
+@session_app.route("/session/watchlist/<update:re:add|remove>", method=['OPTIONS'])
 @session_app.route('/session/sign_in/', method=['OPTIONS'])
 def option():
     return

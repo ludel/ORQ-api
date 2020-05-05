@@ -1,4 +1,3 @@
-bottle==0.12.18
 bottle-redis==0.2.3
 certifi==2019.11.28
 chardet==3.0.4
